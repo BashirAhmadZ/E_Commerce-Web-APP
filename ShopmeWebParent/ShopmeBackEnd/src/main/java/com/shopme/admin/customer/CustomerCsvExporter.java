@@ -9,7 +9,6 @@ import org.supercsv.prefs.CsvPreference;
 
 import com.shopme.admin.AbstractExporter;
 import com.shopme.common.entity.Customer;
-import com.shopme.common.entity.User;
 
 import jakarta.servlet.http.HttpServletResponse;
 

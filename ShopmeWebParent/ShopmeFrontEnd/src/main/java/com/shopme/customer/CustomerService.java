@@ -1,8 +1,7 @@
 package com.shopme.customer;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Random;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +38,7 @@ public class CustomerService {
 	public void registerCustomer(Customer customer) {
 		encodePassword(customer);
 		customer.setEnabled(false);
-		customer.setCreatedTime(new Date());
+		customer.setCreatedTime(LocalDateTime.now());
 		customer.setAuthenticationType(AuthenticationType.DATABASE);
 		
 		//String randomCode = makeRandomString(64);
@@ -99,7 +98,7 @@ public class CustomerService {
 		setName(name, customer);
 		
 		customer.setEnabled(true);
-		customer.setCreatedTime(new Date());
+		customer.setCreatedTime(LocalDateTime.now());
 		customer.setAuthenticationType(authenticationType);
 		customer.setPassword("");
 		customer.setAddressLine1("");

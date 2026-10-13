@@ -1,13 +1,16 @@
 package com.shopme.admin.customer;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class CustomerRestController {
 
-	@Autowired private CustomerService service;
+	private final CustomerService service;
+
+	CustomerRestController(CustomerService service) {
+		this.service = service;
+	}
 	
 	@PostMapping("/customers/check_email")
 	public String checkDuplicateEmail(Integer id, String email) {

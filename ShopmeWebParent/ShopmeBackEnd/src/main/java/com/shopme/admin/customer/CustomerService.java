@@ -3,11 +3,6 @@ package com.shopme.admin.customer;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -25,9 +20,15 @@ public class CustomerService {
 
 	public static final int CUSTOMER_PER_PAGE = 10;
 	
-	@Autowired private CountryRepository countryRepo;
-	@Autowired private CustomerRepository customerRepo;
-	@Autowired private PasswordEncoder passwordEncoder;
+	private final CountryRepository countryRepo;
+	private final CustomerRepository customerRepo;
+	private final PasswordEncoder passwordEncoder;
+
+	CustomerService(CountryRepository countryRepo, CustomerRepository customerRepo, PasswordEncoder passwordEncoder) {
+		this.countryRepo = countryRepo;
+		this.customerRepo = customerRepo;
+		this.passwordEncoder = passwordEncoder;
+	}
 	
 	public void listByPage(int pageNum, PagingAndSortingHelper helper) {
 		helper.listEntities(pageNum, CUSTOMER_PER_PAGE, customerRepo);

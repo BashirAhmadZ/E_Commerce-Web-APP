@@ -2,7 +2,7 @@ package com.shopme.admin.product;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
@@ -43,8 +43,8 @@ public class ProductRepositoryTests {
 		product.setCategory(category);
 		
 		product.setPrice(456);
-		product.setCreatedTime(new Date());
-		product.setUpdatedTime(new Date());
+		product.setCreatedTime(LocalDateTime.now());
+		product.setUpdatedTime(LocalDateTime.now());
 		
 		Product savedProduct = repo.save(product);
 		

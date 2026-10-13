@@ -3,12 +3,12 @@ package com.shopme.admin.customer;
 import java.io.IOException;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.shopme.admin.paging.PagingAndSortingHelper;
@@ -19,17 +19,22 @@ import com.shopme.common.exception.CustomerNotFoundException;
 
 import jakarta.servlet.http.HttpServletResponse;
 
+@RequestMapping("/customers")
 @Controller
 public class CustomerController {
 
-	@Autowired private CustomerService service;
+	private final CustomerService service;
+
+	CustomerController(CustomerService service) {
+		this.service = service;
+	}
 	
-	@GetMapping("/customers")
+	@GetMapping
 	public String listFirstPage() {
 		return "redirect:/customers/page/1?sortField=firstName&sortDir=asc";
 	}
 	
-	@GetMapping("/customers/page/{pageNum}")
+	@GetMapping("/page/{pageNum}")
 	public String listByPage(
 			@PagingAndSortingParam(listName = "listCustomers", moduleURL = "/customers") PagingAndSortingHelper helper, 
 			@PathVariable(name = "pageNum") int pageNum) {
@@ -39,7 +44,7 @@ public class CustomerController {
 		return "customers/customers";
 	}
 	
-	@GetMapping("/customers/{id}/enabled/{status}")
+	@GetMapping("/{id}/enabled/{status}")
 	public String updateCustomerEnabledStatus(@PathVariable("id") Integer id, 
 			@PathVariable("status") boolean enabled, RedirectAttributes redirectAttributes) {
 		service.updateCustomerEnabledStatus(id, enabled);
@@ -50,7 +55,7 @@ public class CustomerController {
 		return "redirect:/customers";
 	}
 	
-	@GetMapping("/customers/detail/{id}")
+	@GetMapping("/detail/{id}")
 	public String viewCustomer(@PathVariable("id") Integer id, Model model, RedirectAttributes ra) {
 		try {
 			Customer customer = service.get(id);
@@ -65,7 +70,7 @@ public class CustomerController {
 		}
 	}
 	
-	@GetMapping("/customers/edit/{id}")
+	@GetMapping("/edit/{id}")
 	public String editCustomer(@PathVariable("id") Integer id, Model model, RedirectAttributes ra) {
 		try {
 			Customer customer = service.get(id);
@@ -83,14 +88,14 @@ public class CustomerController {
 		}
 	}
 	
-	@PostMapping("/customers/save")
+	@PostMapping("/save")
 	public String saveCustomer(Customer customer, Model model, RedirectAttributes ra) {
 		service.save(customer);
 		ra.addFlashAttribute("message", "The customer ID " + customer.getId() + " has been updated successfully.");
 		return "redirect:/customers";
 	}
 	
-	@GetMapping("/customers/delete/{id}")
+	@GetMapping("/delete/{id}")
 	public String deleteCustomer(@PathVariable Integer id, RedirectAttributes ra) {
 		try {
 			service.delete(id);
@@ -101,7 +106,7 @@ public class CustomerController {
 		return "redirect:/customers";
 	}
 	
-	@GetMapping("/customers/export/csv")
+	@GetMapping("/export/csv")
 	public void exportToCSV(HttpServletResponse response) throws IOException {
 		List<Customer> listCustomers = service.listAll();
 		CustomerCsvExporter exporter = new CustomerCsvExporter();

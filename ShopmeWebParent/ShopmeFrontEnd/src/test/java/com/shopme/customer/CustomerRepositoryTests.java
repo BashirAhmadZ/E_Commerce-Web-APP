@@ -2,7 +2,7 @@ package com.shopme.customer;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -44,7 +44,7 @@ public class CustomerRepositoryTests {
 		customer.setCity("Sacramento");
 		customer.setState("California");
 		customer.setPostalCode("95867");
-		customer.setCreatedTime(new Date());
+		customer.setCreatedTime(LocalDateTime.now());
 		
 		Customer savedCustomer = repo.save(customer);
 		
@@ -69,7 +69,7 @@ public class CustomerRepositoryTests {
 		customer.setCity("Mumbai");
 		customer.setState("Maharashtra");
 		customer.setPostalCode("400013");
-		customer.setCreatedTime(new Date());
+		customer.setCreatedTime(LocalDateTime.now());
 		
 		Customer savedCustomer = repo.save(customer);
 		

@@ -1,7 +1,8 @@
 package com.shopme.common.entity.product;
 
 import java.util.ArrayList;
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -37,10 +38,10 @@ public class Product extends IdBasedEntity {
 	private String fullDescription;
 
 	@Column(name = "created_time")
-	private Date createdTime;
+	private LocalDateTime createdTime;
 	
 	@Column(name = "updated_time")
-	private Date updatedTime;
+	private LocalDateTime updatedTime;
 	
 	private boolean enabled;
 	
@@ -116,19 +117,19 @@ public class Product extends IdBasedEntity {
 		this.fullDescription = fullDescription;
 	}
 
-	public Date getCreatedTime() {
+	public LocalDateTime getCreatedTime() {
 		return createdTime;
 	}
 
-	public void setCreatedTime(Date createdTime) {
+	public void setCreatedTime(LocalDateTime createdTime) {
 		this.createdTime = createdTime;
 	}
 
-	public Date getUpdatedTime() {
+	public LocalDateTime getUpdatedTime() {
 		return updatedTime;
 	}
 
-	public void setUpdatedTime(Date updatedTime) {
+	public void setUpdatedTime(LocalDateTime updatedTime) {
 		this.updatedTime = updatedTime;
 	}
 
@@ -281,6 +282,11 @@ public class Product extends IdBasedEntity {
 		return false;
 	}
 	
+	@Transient
+	public String getFormattedUpdatedTime() {
+		return updatedTime == null ? "" : updatedTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+	}
+
 	@Transient
 	public String getShortName() {
 		if (name.length() > 64 ) {

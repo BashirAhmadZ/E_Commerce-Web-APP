@@ -96,7 +96,7 @@
 				<label class="col-sm-2 col-form-label">Updated Time:</label>
 				<div class="col-sm-10 mt-2">
 					<span
-						th:text="${#dates.format(product.updatedTime, 'yyyy-MM-dd HH:mm:ss')}"></span>
+						th:text="${product.formattedUpdatedTime}"></span>
 				</div>
 			</div>
 		</div>

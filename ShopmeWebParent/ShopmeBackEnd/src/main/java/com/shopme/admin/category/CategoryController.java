@@ -3,7 +3,6 @@ package com.shopme.admin.category;
 import java.io.IOException;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,6 +10,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -21,18 +21,22 @@ import com.shopme.common.exception.CategoryNotFoundException;
 
 import jakarta.servlet.http.HttpServletResponse;
 
+@RequestMapping("/categories")
 @Controller
 public class CategoryController {
-	@Autowired
-	private CategoryService service;
+	private final CategoryService service;
+
+	CategoryController(CategoryService service) {
+		this.service = service;
+	}
 	
-	@GetMapping("/categories")
+	@GetMapping
 	public String listFirstPage(@Param("sortDir") String sortDir, Model model) {
 		return listByPage(1, sortDir, null, model);
 	}
 	
-	@GetMapping("/categories/page/{pageNum}")
-	public String listByPage(@PathVariable(name = "pageNum") int pageNum,
+	@GetMapping("/page/{pageNum}")
+	public String listByPage(@PathVariable int pageNum,
 			@Param("sortDir") String sortDir,
 			@Param("keyword") String keyword,
 			Model model) {
@@ -66,7 +70,7 @@ public class CategoryController {
 		return "categories/categories";
 	}
 	
-	@GetMapping("/categories/new")
+	@GetMapping("/new")
 	public String newCategory(Model model) {
 		List<Category> listCategories = service.listCategoriesUsedInForm();
 		
@@ -77,7 +81,7 @@ public class CategoryController {
 		return "categories/category_form";
 	}
 	
-	@PostMapping("/categories/save")
+	@PostMapping("/save")
 	public String saveCategory(Category category,
 			@RequestParam("fileImage") MultipartFile multipartFile,
 			RedirectAttributes ra) throws IOException {
@@ -95,8 +99,8 @@ public class CategoryController {
 		return "redirect:/categories";
 	}
 	
-	@GetMapping("/categories/edit/{id}")
-	public String editCategory(@PathVariable(name = "id") Integer id,
+	@GetMapping("/edit/{id}")
+	public String editCategory(@PathVariable Integer id,
 			Model model,
 			RedirectAttributes ra) {
 
@@ -115,7 +119,7 @@ public class CategoryController {
 		}
 	}
 	
-	@GetMapping("/categories/{id}/enabled/{status}")
+	@GetMapping("/{id}/enabled/{status}")
 	public String updateCategoryEnabledStatus(@PathVariable("id") Integer id, 
 			@PathVariable("status") boolean enabled, RedirectAttributes redirectAttributes) {
 		service.updateCategoryEnabledStatus(id, enabled);
@@ -125,8 +129,8 @@ public class CategoryController {
 		return "redirect:/categories";
 	}
 	
-	@GetMapping("/categories/delete/{id}")
-	public String deleteCategory(@PathVariable(name = "id") Integer id,
+	@GetMapping("/delete/{id}")
+	public String deleteCategory(@PathVariable Integer id,
 			Model model,
 			RedirectAttributes redirectAttributes) {
 		try {
@@ -143,7 +147,7 @@ public class CategoryController {
 		return "redirect:/categories";
 	}
 	
-	@GetMapping("/categories/export/csv")
+	@GetMapping("/export/csv")
 	public void exportToCSV(HttpServletResponse response) throws IOException {
 		List<Category> listCategories = service.listCategoriesUsedInForm();
 		CategoryCsvExporter exporter = new CategoryCsvExporter();

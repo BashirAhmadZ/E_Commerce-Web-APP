@@ -1,6 +1,6 @@
 package com.shopme.admin.product;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,7 +80,7 @@ public class ProductService {
 	
 	public Product save(Product product) {
 		if (product.getId() == null) {
-			product.setCreatedTime(new Date());
+			product.setCreatedTime(LocalDateTime.now());
 		}
 		
 		if (product.getAlias() == null || product.getAlias().isEmpty()) {
@@ -90,7 +90,7 @@ public class ProductService {
 			product.setAlias(product.getAlias().replaceAll(" ", "-"));
 		}
 		
-		product.setUpdatedTime(new Date());
+		product.setUpdatedTime(LocalDateTime.now());
 		
 		return repo.save(product);
 	}

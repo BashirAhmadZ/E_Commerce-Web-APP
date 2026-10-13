@@ -3,7 +3,6 @@ package com.shopme.admin.brand;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.shopme.admin.paging.PagingAndSortingHelper;
@@ -14,8 +13,11 @@ public class BrandService {
 
 	public static final int BRAND_PER_PAGE = 10;
 	
-	@Autowired
-	private BrandRepository repo;
+	private final BrandRepository repo;
+
+	BrandService(BrandRepository repo) {
+		this.repo = repo;
+	}
 	
 	public List<Brand> listAll(){
 		return repo.findAll();

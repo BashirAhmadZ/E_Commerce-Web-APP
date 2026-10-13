@@ -21,7 +21,7 @@ public class ProductService {
 		String categoryIdMatch = "-" + String.valueOf(categoryId) + "-";
 		Pageable pageable = PageRequest.of(pageNum - 1, PRODUCTS_PER_PAGE);
 		
-		return repo.listByCategory(categoryId, categoryIdMatch, "", pageable);
+		return repo.listByCategory(categoryId, categoryIdMatch, pageable);
 	}
 	
 	public Product getProduct(String alias) throws ProductNotFoundException {

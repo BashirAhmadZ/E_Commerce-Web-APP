@@ -1,6 +1,7 @@
 package com.shopme.common.entity;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -88,6 +89,10 @@ public class Customer extends AbstractAddressWithCountry {
 	
 	public String getFullName() {
 		return firstName + " " + lastName;
+	}
+
+	public String getFormattedCreatedTime() {
+		return createdTime == null ? "" : createdTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 	}
 
 	public AuthenticationType getAuthenticationType() {

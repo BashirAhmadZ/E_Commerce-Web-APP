@@ -1,6 +1,7 @@
 package com.shopme.common.entity.order;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -234,6 +235,11 @@ public class Order extends AbstractAddress {
 		return address;
 	}
 	
+	@Transient
+	public String getFormattedDeliverDate() {
+		return deliverDate == null ? "" : deliverDate.format(DateTimeFormatter.ofPattern("E, dd MMM yyyy"));
+	}
+
 	public List<OrderTrack> getOrderTracks() {
 		return orderTracks;
 	}

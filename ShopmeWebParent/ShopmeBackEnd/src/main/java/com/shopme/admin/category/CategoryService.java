@@ -8,7 +8,6 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -25,8 +24,11 @@ import jakarta.transaction.Transactional;
 public class CategoryService {
 	public static final int ROOT_CATEGORIES_PER_PAGE = 5;
 	
-	@Autowired
-	private CategoryRepository repo;
+	private final CategoryRepository repo;
+
+	CategoryService(CategoryRepository repo) {
+		this.repo = repo;
+	}
 	
 	public List<Category> listByPage(CategoryPageInfo  pageInfo, int pageNum, String sortDir,
 			String keyword) {
@@ -40,27 +42,35 @@ public class CategoryService {
 		
 		Pageable pageable = PageRequest.of(pageNum - 1, ROOT_CATEGORIES_PER_PAGE, sort);
 		
-		Page<Category> pageCategories = null;
-		
 		if(keyword != null && !keyword.isEmpty()) {
-			pageCategories = repo.search(keyword, pageable);
-		} else {
-			pageCategories = repo.findRootCategories(pageable);
-		}
-		
-		List<Category> rootCategories = pageCategories.getContent();
-		
-		pageInfo.setTotalElements(pageCategories.getTotalElements());
-		pageInfo.setTotalPages(pageCategories.getTotalPages());
-		
-		if(keyword != null && !keyword.isEmpty()) {
+			Page<Category> pageCategories = repo.search(keyword, pageable);
 			List<Category> searchResult = pageCategories.getContent();
+			
+			pageInfo.setTotalElements(pageCategories.getTotalElements());
+			pageInfo.setTotalPages(pageCategories.getTotalPages());
+			
 			for (Category category : searchResult) {
 				category.setHasChildren(category.getChildren().size() > 0);
 			}
 			return searchResult;
 		} else {
-			return listHierarchicalCategories(rootCategories, sortDir);
+			List<Category> rootCategories = repo.findRootCategories(sort);
+			List<Category> hierarchicalCategories = listHierarchicalCategories(rootCategories, sortDir);
+			
+			int totalCategories = hierarchicalCategories.size();
+			int totalPages = (int) Math.ceil((double) totalCategories / ROOT_CATEGORIES_PER_PAGE);
+			
+			int startIndex = (pageNum - 1) * ROOT_CATEGORIES_PER_PAGE;
+			int endIndex = Math.min(startIndex + ROOT_CATEGORIES_PER_PAGE, totalCategories);
+			
+			pageInfo.setTotalElements(totalCategories);
+			pageInfo.setTotalPages(totalPages);
+			
+			if (startIndex >= totalCategories) {
+				return new ArrayList<>();
+			}
+			
+			return hierarchicalCategories.subList(startIndex, endIndex);
 		}
 	}
 	
@@ -224,4 +234,3 @@ public class CategoryService {
 		repo.deleteById(id);
 	}
 }
-

@@ -105,4 +105,13 @@ public class SettingController {
 		return "redirect:/settings";
 	}
 	
+	@PostMapping("/settings/save_payment")
+	public String savePaymentSettings(HttpServletRequest request, RedirectAttributes ra) throws IOException {
+		List<Setting> paymentSettings = service.getPaymentSettings();
+		updateSettingValueFromForm(request, paymentSettings);
+		
+		ra.addFlashAttribute("message", "Payment settings have been saved.");
+		
+		return "redirect:/settings#payment";
+	}
 }

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+	<div th:fragment="content" th:remove="tag">
+		<div class="form-group row">
+			<label class="col-sm-2 col-form-label">Order ID:</label>
+			<div class="col-sm-10">
+				<input type="text" class="form-control mb-1" th:value="${order.id}"
+					readonly="readonly" />
+			</div>
+		</div>
+
+		<div class="form-group row">
+			<label class="col-sm-2 col-form-label">Customer:</label>
+			<div class="col-sm-10">
+				<input type="text" class="form-control mb-1" th:value="${order.customer.fullName}"
+				    readonly="readonly" />
+			</div>
+		</div>
+
+		<div class="form-group row">
+			<label class="col-sm-2 col-form-label">Product Cost:</label>
+			<div class="col-sm-10">
+				<input type="text" class="form-control mb-1" th:field="*{productCost}"
+					required="required" />
+			</div>
+		</div>
+
+		<div class="form-group row">
+			<label class="col-sm-2 col-form-label">Subtotal:</label>
+			<div class="col-sm-10">
+				<input type="text" class="form-control mb-1" th:field="*{subtotal}"
+					required="required" />
+			</div>
+		</div>
+
+		<div class="form-group row">
+			<label class="col-sm-2 col-form-label">Shipping Cost:</label>
+			<div class="col-sm-10 mt-2">
+				<input type="text" class="form-control mb-1" th:field="*{shippingCost}"
+					required="required" />
+			</div>
+		</div>
+
+		<div class="form-group row">
+			<label class="col-sm-2 col-form-label">Tax:</label>
+			<div class="col-sm-10 mt-2">
+				<input type="text" class="form-control mb-1" th:field="*{tax}"
+					required="required" />
+			</div>
+		</div>
+
+		<div class="form-group row">
+			<label class="col-sm-2 col-form-label">Total:</label>
+			<div class="col-sm-10">
+				<input type="text" class="form-control mb-1" th:field="*{total}"
+					required="required" />
+			</div>
+		</div>
+
+		<div class="form-group row">
+			<label class="col-sm-2 col-form-label">Payment Method:</label>
+			<div class="col-sm-10">
+				<select th:field="*{paymentMethod}" class="form-select mb-1" required style="max-width: 150px;">
+                    <option th:each="pm : ${T(com.shopme.common.entity.order.PaymentMethod).value()}"
+                     th:value="${pm}" th:text="${pm}"/>
+                </select>
+			</div>
+		</div>
+
+		<div class="form-group row">
+			<label class="col-sm-2 col-form-label">Status:</label>
+			<div class="col-sm-10">
+				<select th:field="*{status}" class="form-select mb-1" required style="max-width: 150px;">
+                    <option th:each="os : ${T(com.shopme.common.entity.order.OrderStatus).value()}"
+                     th:value="${os}" th:text="${os}"/>
+                </select>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

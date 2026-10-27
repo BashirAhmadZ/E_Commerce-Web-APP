@@ -1,5 +1,6 @@
 package com.shopme.common.entity.order;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 import com.shopme.common.entity.IdBasedEntity;
@@ -19,7 +20,7 @@ public class OrderTrack extends IdBasedEntity{
 	@Column(length = 256)
 	private String notes;
 	
-	private Date updatedTime;
+	private LocalDate updatedTime;
 	
 	@Enumerated(EnumType.STRING)
 	@Column(length = 45, nullable = false)
@@ -37,12 +38,12 @@ public class OrderTrack extends IdBasedEntity{
 		this.notes = notes;
 	}
 
-	public Date getUpdatedTime() {
+	public LocalDate getUpdatedTime() {
 		return updatedTime;
 	}
 
-	public void setUpdatedTime(Date updatedTime) {
-		this.updatedTime = updatedTime;
+	public void setUpdatedTime(LocalDate localDate) {
+		this.updatedTime = localDate;
 	}
 
 	public OrderStatus getStatus() {

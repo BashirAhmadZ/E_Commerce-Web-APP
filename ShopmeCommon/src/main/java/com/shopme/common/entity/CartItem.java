@@ -2,6 +2,7 @@ package com.shopme.common.entity;
 
 import com.shopme.common.entity.product.Product;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -11,7 +12,7 @@ import jakarta.persistence.Transient;
 @Entity
 @Table(name = "cart_items")
 public class CartItem extends IdBasedEntity {
-
+	
 	@ManyToOne
 	@JoinColumn(name = "customer_id")
 	private Customer customer;
@@ -21,6 +22,8 @@ public class CartItem extends IdBasedEntity {
 	private Product product;
 	
 	private int quantity;
+	
+	private float shippingCost;
 
 	public CartItem() {
 	}
@@ -66,4 +69,14 @@ public class CartItem extends IdBasedEntity {
 	public float getSubtotal() {
 		return (product.getDiscountPrice() * quantity);
 	}
+	
+	@Transient
+	public float getShippingCost() {
+		return shippingCost;
+	}
+
+	public void setShippingCost(float shippingCost) {
+		this.shippingCost = shippingCost;
+	}
+	
 }

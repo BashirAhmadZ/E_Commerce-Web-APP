@@ -29,6 +29,7 @@ public class StateRestController {
 		for (State state : listStates) {
 			result.add(new StateDTO(state.getId(), state.getName()));
 		}
+		
 		return result;
 	}
 	

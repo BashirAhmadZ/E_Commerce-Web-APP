@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.shopme.common.entity.AbstractAddress;
+import com.shopme.common.entity.Address;
 import com.shopme.common.entity.Customer;
 
 import jakarta.persistence.CascadeType;
@@ -18,6 +19,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
 
@@ -53,6 +55,7 @@ public class Order extends AbstractAddress {
 	private Set<OrderDetail> orderDetails = new HashSet<>();
 
 	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+	@OrderBy("updatedTime ASC")
 	private List<OrderTrack> orderTracks = new ArrayList<>();
 	
 	public String getCountry() {
@@ -197,7 +200,25 @@ public class Order extends AbstractAddress {
 		
 		return destination;
 	}
+	
+	@Transient
+	public String getFormattedDeliverDate() {
+		return deliverDate == null ? "" : deliverDate.format(DateTimeFormatter.ofPattern("E, dd MMM yyyy"));
+	}
 
+	public void copyShippingAddress(Address address) {
+		setFirstName(address.getFirstName());
+		setLastName(address.getLastName());
+		setPhoneNumber(address.getPhoneNumber());
+		setAddressLine1(address.getAddressLine1());
+		setAddressLine2(address.getAddressLine2());
+		setCity(address.getCity());
+		setCountry(address.getCountry().getName());
+		setPostalCode(address.getPostalCode());
+		setState(address.getState());
+		
+	}
+	
 	@Transient
 	public String getShippingAddress() {
 		String address = firstName;
@@ -234,11 +255,6 @@ public class Order extends AbstractAddress {
 		
 		return address;
 	}
-	
-	@Transient
-	public String getFormattedDeliverDate() {
-		return deliverDate == null ? "" : deliverDate.format(DateTimeFormatter.ofPattern("E, dd MMM yyyy"));
-	}
 
 	public List<OrderTrack> getOrderTracks() {
 		return orderTracks;
@@ -246,5 +262,15 @@ public class Order extends AbstractAddress {
 
 	public void setOrderTracks(List<OrderTrack> orderTracks) {
 		this.orderTracks = orderTracks;
+	}
+	
+	@Transient
+	public String getDeliverDateOnForm() {
+		//DateTimeFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
+		//return dateFormatter.format(this.deliverDate);
+		
+		DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+	    return this.deliverDate.format(dateFormatter);
 	}
 }

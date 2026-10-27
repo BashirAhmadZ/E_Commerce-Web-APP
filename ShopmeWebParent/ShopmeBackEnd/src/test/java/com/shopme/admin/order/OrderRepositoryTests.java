@@ -2,6 +2,7 @@ package com.shopme.admin.order;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
@@ -166,13 +167,13 @@ public class OrderRepositoryTests {
 		
 		OrderTrack newTrack = new OrderTrack();
 		newTrack.setOrder(order);
-		newTrack.setUpdatedTime(new Date());
+		newTrack.setUpdatedTime(LocalDate.now());
 		newTrack.setStatus(OrderStatus.NEW);
 		newTrack.setNotes(OrderStatus.NEW.defaultDescription());
 		
 		OrderTrack processingTrack = new OrderTrack();
 		processingTrack.setOrder(order);
-		processingTrack.setUpdatedTime(new Date());
+		processingTrack.setUpdatedTime(LocalDate.now());
 		processingTrack.setStatus(OrderStatus.PROCESSING);
 		processingTrack.setNotes(OrderStatus.PROCESSING.defaultDescription());
 		

@@ -38,12 +38,12 @@ public class ShoppingCartController {
 			estimatedTotal += item.getSubtotal();
 		}
 		
-		Address DefaultAddress = addressService.getDefaultAddress(customer);
+		Address defaultAddress = addressService.getDefaultAddress(customer);
 		ShippingRate shippingRate = null;
 		boolean usePrimaryAddressAsDefault = false;
 		
-		if (DefaultAddress != null) {
-			shippingRate = shippingRateService.getShippingRateForAddress(DefaultAddress);
+		if (defaultAddress != null) {
+			shippingRate = shippingRateService.getShippingRateForAddress(defaultAddress);
 		} else {
 			usePrimaryAddressAsDefault = true;
 			shippingRate = shippingRateService.getShippingRateForCustomer(customer);

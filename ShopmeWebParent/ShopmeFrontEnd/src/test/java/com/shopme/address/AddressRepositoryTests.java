@@ -106,7 +106,7 @@ public class AddressRepositoryTests {
 	
 	@Test
 	public void testGetDefault() {
-		Integer customerId = 1;
+		Integer customerId = 5;
 		Address address = repo.findDefaultByCustomer(customerId);
 		
 		assertThat(address).isNotNull();

@@ -10,6 +10,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import com.shopme.common.entity.Country;
 import com.shopme.common.entity.ShippingRate;
+import com.shopme.shippingrate.ShippingRateRepository;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = Replace.NONE)

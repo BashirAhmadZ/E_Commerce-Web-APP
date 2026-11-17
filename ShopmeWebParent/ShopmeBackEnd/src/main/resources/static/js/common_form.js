@@ -41,7 +41,7 @@ function checkFileSize(fileInput) {
 function showModalDialog(title, message){
 	$("#modalTitle").text(title);
 	$("#modalBody").text(message);
-	$("#modalDialog").modal();
+	showBootstrapModal("#modalDialog");
 }
 
 function showErrorModal(message){

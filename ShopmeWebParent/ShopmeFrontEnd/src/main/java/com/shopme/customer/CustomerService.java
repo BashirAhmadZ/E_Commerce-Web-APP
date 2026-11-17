@@ -56,7 +56,6 @@ public class CustomerService {
 	private void encodePassword(Customer customer) {
 		String encodedPassword = passwordEncoder.encode(customer.getPassword());
 		customer.setPassword(encodedPassword);
-		
 	}
 	
 	public boolean verify(String verificationCode) {

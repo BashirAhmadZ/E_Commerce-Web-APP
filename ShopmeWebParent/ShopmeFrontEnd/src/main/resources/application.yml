@@ -2,6 +2,8 @@
 # Warnings:
 # - The yaml file had comments which are lost in the refactoring!
 #spring:
+#  main:
+#    allow-circular-references: true
 #  application:
 #    name: ShopmeFrontEnd
 #  datasource:

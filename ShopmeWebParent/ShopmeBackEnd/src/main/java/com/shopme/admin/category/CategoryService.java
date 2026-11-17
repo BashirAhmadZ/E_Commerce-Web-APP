@@ -26,6 +26,10 @@ public class CategoryService {
 	
 	private final CategoryRepository repo;
 
+	public List<Category> listAll() {
+		return listByPage(new CategoryPageInfo(), 1, "asc", null);
+	}
+	
 	CategoryService(CategoryRepository repo) {
 		this.repo = repo;
 	}

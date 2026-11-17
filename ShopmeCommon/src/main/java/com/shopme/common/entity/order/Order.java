@@ -7,6 +7,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.springframework.expression.ParseException;
+
 import com.shopme.common.entity.AbstractAddress;
 import com.shopme.common.entity.Address;
 import com.shopme.common.entity.Customer;
@@ -51,12 +53,23 @@ public class Order extends AbstractAddress {
 	@JoinColumn(name = "customer_id")
 	private Customer customer;
 
-	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL)//, orphanRemoval = true
+	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<OrderDetail> orderDetails = new HashSet<>();
 
-	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
 	@OrderBy("updatedTime ASC")
 	private List<OrderTrack> orderTracks = new ArrayList<>();
+	
+	public Order() {
+	}
+	
+	public Order(Integer id, LocalDateTime orderTime, float productCost, float subtotal, float total) {
+		this.id = id;
+		this.orderTime = orderTime;
+		this.productCost = productCost;
+		this.subtotal = subtotal;
+		this.total = total;
+	}
 	
 	public String getCountry() {
 		return country;
@@ -200,11 +213,6 @@ public class Order extends AbstractAddress {
 		
 		return destination;
 	}
-	
-	@Transient
-	public String getFormattedDeliverDate() {
-		return deliverDate == null ? "" : deliverDate.format(DateTimeFormatter.ofPattern("E, dd MMM yyyy"));
-	}
 
 	public void copyShippingAddress(Address address) {
 		setFirstName(address.getFirstName());
@@ -255,7 +263,7 @@ public class Order extends AbstractAddress {
 		
 		return address;
 	}
-
+	
 	public List<OrderTrack> getOrderTracks() {
 		return orderTracks;
 	}
@@ -272,5 +280,105 @@ public class Order extends AbstractAddress {
 		DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
 	    return this.deliverDate.format(dateFormatter);
+	}
+	
+	public void setDeliverDateOnForm(String dateString) {
+		DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+ 		
+		try {
+			this.deliverDate = LocalDateTime.parse(dateString, dateFormatter);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		} 		
+	}
+
+	/*
+	@Transient
+	public String getFormattedDeliverDate() {
+		return deliverDate == null ? "" : deliverDate.format(DateTimeFormatter.ofPattern("E, dd MMM yyyy"));
+	}*/
+	
+	@Transient
+	public String getRecipientName() {
+		String name = firstName;
+		if (lastName != null && !lastName.isEmpty()) name += " " + lastName;
+		return name;
+	}
+	
+	@Transient
+	public String getRecipientAddress() {
+		String address = addressLine1;
+		
+		if (addressLine2 != null && !addressLine2.isEmpty()) address += ", " + addressLine2;
+		
+		if (!city.isEmpty()) address += ", " + city;
+		
+		if (state != null && !state.isEmpty()) address += ", " + state;
+		
+		address += ", " + country;
+		
+		if (!postalCode.isEmpty()) address += ". " + postalCode;
+		
+		return address;
+	}	
+	
+	@Transient
+	public boolean isCOD() {
+		return paymentMethod.equals(PaymentMethod.COD);
+	}
+	
+	@Transient
+	public boolean isProcessing() {
+		return hasStatus(OrderStatus.PROCESSING);
+	}
+	
+	@Transient
+	public boolean isPicked() {
+		return hasStatus(OrderStatus.PICKED);
+	}
+	
+	@Transient
+	public boolean isShipping() {
+		return hasStatus(OrderStatus.SHIPPING);
+	}
+	
+	@Transient
+	public boolean isDelivered() {
+		return hasStatus(OrderStatus.DELIVERED);
+	}
+
+	@Transient
+	public boolean isReturnRequested() {
+		return hasStatus(OrderStatus.RETURN_REQUESTED);
+	}	
+	
+	@Transient
+	public boolean isReturned() {
+		return hasStatus(OrderStatus.RETURNED);
+	}	
+	
+	public boolean hasStatus(OrderStatus status) {
+		for (OrderTrack aTrack : orderTracks) {
+			if (aTrack.getStatus().equals(status)) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	@Transient
+	public String getProductNames() {
+		String productNames = "";
+		
+		productNames = "<ul>";
+		
+		for (OrderDetail detail : orderDetails) {
+			productNames += "<li>" + detail.getProduct().getShortName() + "</li>";			
+		}
+		
+		productNames += "</ul>";
+		
+		return productNames;
 	}
 }

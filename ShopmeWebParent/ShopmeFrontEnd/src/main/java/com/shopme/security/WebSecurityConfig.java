@@ -1,23 +1,25 @@
 package com.shopme.security;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+import com.shopme.security.oauth.CustomerOAuth2UserService;
+import com.shopme.security.oauth.OAuth2LoginSuccessHandler;
+
 @Configuration
-@EnableWebSecurity
 public class WebSecurityConfig {
 	
-//	@Autowired private CustomerOAuth2UserService oauth2userService;
-//	@Autowired private OAuth2LoginSuccessHandler oauth2LoginHandler;
-//	@Autowired private DatabaseLoginSuccessHandler databaseLoginHandler;
+	@Autowired private CustomerOAuth2UserService oauth2userService;
+	@Autowired private OAuth2LoginSuccessHandler oauth2LoginHandler;
+	@Autowired private DatabaseLoginSuccessHandler databaseLoginHandler;
 	
 	@Bean
 	PasswordEncoder passwordEncoder() {
@@ -30,9 +32,16 @@ public class WebSecurityConfig {
 //		.csrf(csrf -> {
 //			csrf.disable();
 //		})
+		
+		/*
+		 * "/account_details", "/update_account_details", 
+							"/cart", "/address_book/**", "/checkout", "/place_order", "/process_paypal_order"
+		 */
+		
 		http.authorizeHttpRequests(auth -> auth
-				.requestMatchers("/account_details", "/update_account_details", 
-							"/cart", "/address_book/**", "/checkout", "/place_order", "/process_paypal_order").authenticated()
+				.requestMatchers("/account_details", "/update_account_details", "/orders/**",
+						"/cart", "/address_book/**", "/checkout", "/place_order", "/reviews/**", 
+					    "/process_paypal_order", "/write_review/**", "/post_review").authenticated()
 				.requestMatchers("/images/**", "/js/**", "/webjars/**").permitAll()
 				.anyRequest().permitAll()
 			)
@@ -41,23 +50,24 @@ public class WebSecurityConfig {
 			.formLogin(form -> form
 				.loginPage("/login")
 				.usernameParameter("email")
-				
+				.successHandler(databaseLoginHandler)
 				.permitAll() //.successHandler(databaseLoginHandler)
 			)
-			
-			.logout(logout -> logout.permitAll()		
+			/*
+			.oauth2Login(oauth2 -> oauth2
+					.loginPage("/login")
+					.userInfoEndpoint(u -> u.userService(oauth2userService))
+					.successHandler(oauth2LoginHandler)
 			)
+			*/
+			.logout(logout -> logout.permitAll())
+			
 			.rememberMe(rem -> rem
 					.key("1234567890_aBcDeFgHiJkLmNoPqRsTuVwXyZ")
 					.tokenValiditySeconds(14 * 24 * 60 * 60)
 			)
 			.sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.ALWAYS))
 			;
-//			.oauth2Login(oauth2 -> oauth2
-//				.loginPage("/login")
-//			.userInfoEndpoint(u -> u.userService(oauth2userService))
-//			.successHandler(oauth2LoginHandler)
-//		)	
 			return http.build();
 	}
 	

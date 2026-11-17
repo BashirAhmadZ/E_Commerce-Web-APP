@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,6 +14,8 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.expression.ParseException;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.test.annotation.Rollback;
 
 import com.shopme.common.entity.Customer;
@@ -167,13 +169,13 @@ public class OrderRepositoryTests {
 		
 		OrderTrack newTrack = new OrderTrack();
 		newTrack.setOrder(order);
-		newTrack.setUpdatedTime(LocalDate.now());
+		newTrack.setUpdatedTime(LocalDateTime.now());
 		newTrack.setStatus(OrderStatus.NEW);
 		newTrack.setNotes(OrderStatus.NEW.defaultDescription());
 		
 		OrderTrack processingTrack = new OrderTrack();
 		processingTrack.setOrder(order);
-		processingTrack.setUpdatedTime(LocalDate.now());
+		processingTrack.setUpdatedTime(LocalDateTime.now());
 		processingTrack.setStatus(OrderStatus.PROCESSING);
 		processingTrack.setNotes(OrderStatus.PROCESSING.defaultDescription());
 		
@@ -184,5 +186,41 @@ public class OrderRepositoryTests {
 		Order updatedOrder = repo.save(order);
 		
 		assertThat(updatedOrder.getOrderTracks()).hasSizeGreaterThan(1);
+	}
+	
+	@Test
+	public void testAddTrackWithStatusNewToOrder() {
+		Integer orderId = 2;
+		Order order = repo.findById(orderId).get();
+		
+		OrderTrack newTrack = new OrderTrack();
+		newTrack.setOrder(order);
+		newTrack.setUpdatedTime(LocalDateTime.now());
+		newTrack.setStatus(OrderStatus.NEW);
+		newTrack.setNotes(OrderStatus.NEW.defaultDescription());
+		
+		List<OrderTrack> orderTracks = order.getOrderTracks();
+		orderTracks.add(newTrack);		
+
+		Order updatedOrder = repo.save(order);
+		
+		assertThat(updatedOrder.getOrderTracks()).hasSizeGreaterThan(1);
+	}
+	
+	@Test
+	public void testFindByOrderTimeBetween() throws ParseException {
+		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		LocalDateTime startTime = LocalDateTime.parse("2021-08-01", dateTimeFormatter);
+		LocalDateTime endTime = LocalDate.parse("2021-08-31", dateTimeFormatter).atStartOfDay();
+		
+		List<Order> listOrders = repo.findByOrderTimeBetween(startTime, endTime);
+		
+		assertThat(listOrders.size()).isGreaterThan(0);
+		
+		for (Order order : listOrders) {
+			System.out.printf("%s | %s | %.2f | %.2f | %.2f \n", 
+					order.getId(), order.getOrderTime(), order.getProductCost(), 
+					order.getSubtotal(), order.getTotal());
+		}
 	}
 }

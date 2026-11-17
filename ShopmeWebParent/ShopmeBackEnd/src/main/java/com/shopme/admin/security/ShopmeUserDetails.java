@@ -83,4 +83,7 @@ public class ShopmeUserDetails implements UserDetails {
 		return user.hasRole(roleName);
 	}
 	
+	public User getUser() {
+		return user;
+	}
 }

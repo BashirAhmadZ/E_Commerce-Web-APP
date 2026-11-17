@@ -1,7 +1,8 @@
 package com.shopme.common.entity.order;
 
-import java.time.LocalDate;
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 import com.shopme.common.entity.IdBasedEntity;
 
@@ -12,6 +13,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 
 @Entity
 @Table(name = "order_track")
@@ -20,7 +22,7 @@ public class OrderTrack extends IdBasedEntity{
 	@Column(length = 256)
 	private String notes;
 	
-	private LocalDate updatedTime;
+	private LocalDateTime updatedTime;
 	
 	@Enumerated(EnumType.STRING)
 	@Column(length = 45, nullable = false)
@@ -38,11 +40,11 @@ public class OrderTrack extends IdBasedEntity{
 		this.notes = notes;
 	}
 
-	public LocalDate getUpdatedTime() {
+	public LocalDateTime getUpdatedTime() {
 		return updatedTime;
 	}
 
-	public void setUpdatedTime(LocalDate localDate) {
+	public void setUpdatedTime(LocalDateTime localDate) {
 		this.updatedTime = localDate;
 	}
 
@@ -62,5 +64,41 @@ public class OrderTrack extends IdBasedEntity{
 		this.order = order;
 	}
 	
+	/*
+	 * Older code
+	@Transient
+	public String getUpdatedTimeOnForm() {
+		DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss");
+		return dateFormatter.format(this.updatedTime);
+	}
 	
+	public void setUpdatedTimeOnForm(String dateString) {
+		DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss");
+		
+		try {
+			this.updatedTime = dateFormatter.parse(dateString);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+	}*/
+	
+	@Transient
+	public String getUpdatedTimeOnForm() {
+	    DateTimeFormatter dateFormatter =
+	            DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+
+	    return this.updatedTime.format(dateFormatter);
+	}
+
+	public void setUpdatedTimeOnForm(String dateString) {
+	    DateTimeFormatter dateFormatter =
+	            DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+
+	    try {
+	        this.updatedTime = LocalDateTime.parse(dateString, dateFormatter);
+	    } catch (DateTimeParseException e) {
+	        throw new IllegalArgumentException(
+	                "Invalid date-time format: " + dateString, e);
+	    }
+	}
 }

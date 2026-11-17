@@ -1,3 +1,11 @@
+function getBootstrapModal(element) {
+	var modalElement = element instanceof HTMLElement ? element : document.querySelector(element);
+	if (!modalElement) return null;
+	return bootstrap.Modal.getOrCreateInstance(modalElement);
+}
+function showBootstrapModal(selector) { var modal = getBootstrapModal(selector); if (modal) modal.show(); }
+function hideBootstrapModal(selector) { var modal = getBootstrapModal(selector); if (modal) modal.hide(); }
+
 $(document).ready(function() {
 	$("#logoutLink").on("click", function(e) {
 		e.preventDefault();
@@ -26,7 +34,7 @@ function customizeTabs() {
 	//Javascript to enable link to tab
 	var url = document.location.toString();
 	if(url.match('#')) {
-		$('.nav-tabs a[href="#' + url.split('#')[1] + '"]').tab('show');
+		var tab = document.querySelector('.nav-tabs a[href="#' + url.split('#')[1] + '"]'); if (tab) bootstrap.Tab.getOrCreateInstance(tab).show();
 	}
 	
 	//Change hash for page-reload
@@ -34,3 +42,13 @@ function customizeTabs() {
 		window.location.hash = e.target.hash;
 	});
 }
+
+function handleDefaultDetailLinkClick() {
+  $(".link-detail").on("click", function(e) {
+    e.preventDefault();
+    var modal = document.querySelector("#detailModal");
+    if (!modal) return;
+    $(modal).find(".modal-content").load($(this).attr("href"), function() { showBootstrapModal(modal); });
+  });
+}
+

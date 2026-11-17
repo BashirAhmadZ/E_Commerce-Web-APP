@@ -41,6 +41,15 @@ public interface ProductRepository extends SearchRepository<Product, Integer> {
 	public Page<Product> searchInCategory(Integer categoryId, String categoryMatch,
 			String keyword, Pageable pageable);
 	
+	@Query("SELECT p FROM Product p WHERE p.name LIKE %?1%")
+	public Page<Product> searchProductsByName(String keyword, Pageable pageable);
+	
+	@Query("Update Product p SET p.averageRating = COALESCE((SELECT AVG(r.rating) FROM Review r WHERE r.product.id = ?1), 0),"
+			+ " p.reviewCount = (SELECT COUNT(r.id) FROM Review r WHERE r.product.id =?1) "
+			+ "WHERE p.id = ?1")
+	@Modifying
+	public void updateReviewCountAndAverageRating(Integer productId);
+	
 	/*
 	@Query("SELECT c FROM Category c WHERE c.parent.id is NULL")
 	public List<Product> findRootCategories(Sort sort);

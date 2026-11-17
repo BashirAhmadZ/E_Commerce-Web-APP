@@ -127,7 +127,7 @@
 	</div>
 	
 	<div th:fragment="format_time(dateTime)" th:remove="tag">
-		<span th:if="${#dates.format(dateTime, 'yyyy-MM-dd HH:mm:ss')}"></span>
+		<span th:text="${#temporals.format(dateTime, 'yyyy-MM-dd HH:mm:ss')}"></span>
 	</div>
 	<div th:replace="~{fragments :: (${order.shippingCost})}">Shipping cost</div>
 	<div th:fragment="currency_input(amount)" th:remove="tag">

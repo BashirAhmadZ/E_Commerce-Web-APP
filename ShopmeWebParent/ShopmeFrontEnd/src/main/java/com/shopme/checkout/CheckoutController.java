@@ -28,7 +28,7 @@ import com.shopme.setting.CurrencySettingBag;
 import com.shopme.setting.EmailSettingBag;
 import com.shopme.setting.PaymentSettingBag;
 import com.shopme.setting.SettingService;
-import com.shopme.shipping.ShippingRateService;
+import com.shopme.shippingrate.ShippingRateService;
 import com.shopme.shoppingcart.ShoppingCartService;
 
 import jakarta.mail.MessagingException;

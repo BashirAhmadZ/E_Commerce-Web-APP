@@ -49,17 +49,21 @@ public class CheckoutService {
 
 	private float calculateProductTotal(List<CartItem> cartItems) {
 		float total = 0.0f;
+		
 		for (CartItem item : cartItems) {
 			total += item.getSubtotal();
 		}
+		
 		return total;
 	}
 
 	private float calculateProductCost(List<CartItem> cartItems) {
 		float cost = 0.0f;
+		
 		for (CartItem item : cartItems) {
 			cost += item.getQuantity() * item.getProduct().getCost();
 		}
+		
 		return cost;
 	}
 }

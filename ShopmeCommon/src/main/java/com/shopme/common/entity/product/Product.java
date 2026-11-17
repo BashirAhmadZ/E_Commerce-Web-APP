@@ -37,7 +37,7 @@ public class Product extends IdBasedEntity {
 	@Column(length = 4096, nullable = false, name = "full_description")
 	private String fullDescription;
 
-	@Column(name = "created_time")
+	@Column(name = "created_time", nullable = false, updatable = false)
 	private LocalDateTime createdTime;
 	
 	@Column(name = "updated_time")
@@ -78,11 +78,21 @@ public class Product extends IdBasedEntity {
 	@OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<ProductDetail> details = new ArrayList<>(); 
 	
+	private int reviewCount;
+	private float averageRating;
+	
+	@Transient private boolean customerCanReview;
+	@Transient private boolean reviewedByCustomer;
+	
 	public Product(Integer id) {
 		this.id = id;
 	}
 
 	public Product() {
+	}
+	
+	public Product(String name) {
+		this.name = name;
 	}
 	
 	public String getName() {
@@ -301,5 +311,42 @@ public class Product extends IdBasedEntity {
 			return (price * ((100 - discountPercent) / 100));
 		}
 		return this.price;
+	}
+	
+	public int getReviewCount() {
+		return reviewCount;
+	}
+
+	public void setReviewCount(int reviewCount) {
+		this.reviewCount = reviewCount;
+	}
+
+	public float getAverageRating() {
+		return averageRating;
+	}
+
+	public void setAverageRating(float averageRating) {
+		this.averageRating = averageRating;
+	}
+	
+	@Transient
+	public String getURI() {
+		return "/p/" + this.alias;
+	}
+
+	public boolean isCustomerCanReview() {
+		return customerCanReview;
+	}
+
+	public void setCustomerCanReview(boolean customerCanReview) {
+		this.customerCanReview = customerCanReview;
+	}
+
+	public boolean isReviewedByCustomer() {
+		return reviewedByCustomer;
+	}
+
+	public void setReviewedByCustomer(boolean reviewedByCustomer) {
+		this.reviewedByCustomer = reviewedByCustomer;
 	}
 }

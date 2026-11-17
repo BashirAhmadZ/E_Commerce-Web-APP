@@ -53,6 +53,7 @@ public class ProductService {
 		helper.updateModelAttributes(pageNum, page);
 	}
 	
+	/*
 	public Page<Product> listByPage(int pageNum, String sortField, String sortDir,
 			String keyword, Integer categoryId) {
 		Sort sort = Sort.by(sortField);
@@ -76,6 +77,16 @@ public class ProductService {
 		}
 		
 		return repo.findAll(pageable);
+	}
+	*/
+	
+	public void searchProducts(int pageNum, PagingAndSortingHelper helper) {
+		Pageable pageable = helper.createPageable(PRODUCTS_PER_PAGE, pageNum);
+		String keyword = helper.getKeyword();		
+		
+		Page<Product> page = repo.searchProductsByName(keyword, pageable);		
+		
+		helper.updateModelAttributes(pageNum, page);
 	}
 	
 	public Product save(Product product) {

@@ -134,7 +134,7 @@
 		$(".linkCustomerDetail").on("click", function(e) {
 			e.preventDefault();
 			linkDetailURL = $(this).attr("href");
-			$("#customerDetailModal").modal("show").find(".modal-content").load(linkDetailURL);
+			$("#customerDetailModal").find(".modal-content").load(linkDetailURL, function() { showBootstrapModal("#customerDetailModal"); });
 		});
 	}
 	
@@ -142,7 +142,7 @@
 		$(".linkOrderDetails").on("click", function(e) {
 			e.preventDefault();
 			linkDetailURL = $(this).attr("href");
-			$("#orderDetailModal").modal("show").find(".modal-content").load(linkDetailURL);
+			$("#orderDetailModal").find(".modal-content").load(linkDetailURL, function() { showBootstrapModal("#orderDetailModal"); });
 		});
 	}
 </script>
